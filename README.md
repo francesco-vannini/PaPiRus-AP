@@ -1,2 +1,4 @@
 # AP-PaPiRus-Pi-PoE
-this script provides information about the status and the configuration of the AP via the PaPiRus screen
+This script APInfo.py provides information about the status and the configuration of the AP via the PaPiRus screen.
+
+The two additional files (hostapd.conf and interfaces) are configuration templates
