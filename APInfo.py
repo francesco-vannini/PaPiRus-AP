@@ -114,7 +114,7 @@ def main():
     
     text = PapirusText()
 
-    text.write("-4---3---2---1------\r\nPress 1 for basic info\r\nPress 2 for stats\r\nPress 3 for detailed info", S_SIZE
+    text.write("-4---3---2---1------\r\nPress 1 for basic info\r\nPress 2 for stats\r\nPress 3 for detailed info", S_SIZE)
 
     while True:
         if GPIO.input(SW1) == False:
