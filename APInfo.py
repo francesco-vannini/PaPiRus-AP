@@ -123,7 +123,6 @@ def main():
         if GPIO.input(SW2) == False:
             while GPIO.input(SW1) and GPIO.input(SW3) and GPIO.input(SW4):
                 netstats = BytesPerSecond(interface)
-                print netstats
                 text.write("Long press 1,3,4 exit\r\nBandwidth:"
                  + "\r\ntx: " + str(netstats['delta_tx']/1024)
                  + " Kb/s\r\n"
