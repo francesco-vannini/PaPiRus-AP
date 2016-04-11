@@ -64,7 +64,7 @@ def BytesPerSecond(interface):
         bandwidth['tx_bytes_t2'] = interfaceStats_t2[interface]['tx_bytes']
         bandwidth['rx_bytes_t2'] = interfaceStats_t2[interface]['rx_bytes']
 
-        return {'delta_tx' : int(bandwidth['tx_bytes_t2']) - int(bandwidth['tx_bytes_t1']), 'delta_rx' : int(bandw$
+        return {'delta_tx' : int(bandwidth['tx_bytes_t2']) - int(bandwidth['tx_bytes_t1']), 'delta_rx' : int(bandwidth['rx_bytes_t2']) - int(bandwidth['rx_bytes_t1'])}
 
 def APName():
         hostapConf = open("/etc/hostapd/hostapd.conf","r")
@@ -114,7 +114,7 @@ def main():
     
     text = PapirusText()
 
-    text.write("-4---3---2---1------\r\nPress 1 for basic info\r\nPress 2 for stats\r\nPress 3 for detailed info",$
+    text.write("-4---3---2---1------\r\nPress 1 for basic info\r\nPress 2 for stats\r\nPress 3 for detailed info", S_SIZE
 
     while True:
         if GPIO.input(SW1) == False:
