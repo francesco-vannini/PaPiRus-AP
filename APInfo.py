@@ -5,7 +5,7 @@ import sys
 import re
 import time
 from commands import *
-from papirus import PapirusText
+from papirus import Papirus
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
@@ -84,6 +84,7 @@ def IPAddress():
         for index in range(0,len(interfacesInfoSplit)):
                 if interfacesInfoSplit[index] == 'inet':
                         return (interfacesInfoSplit[index+1].split('/'))[0]
+
 def InterfaceInfo():
         interfacesConf = open("/etc/network/interfaces","r")
         br0Conf = " "
@@ -100,6 +101,26 @@ def InterfaceInfo():
                         br0Conf += lines[index+1].lstrip()
         return br0Conf
 
+def write_text(papirus, text, size):
+
+    # initially set all white background
+    image = Image.new('1', papirus.size, WHITE)
+
+    # prepare for drawing
+    draw = ImageDraw.Draw(image)
+
+    font = ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeMono.ttf', size)
+
+    # Calculate the max number of char to fit on line
+    line_size = (papirus.width / (size*0.65))
+
+    current_line = 0
+    for l in re.split(r'[\r\n]+', text):
+        current_line += 1
+        draw.text( (0, ((size*current_line)-size)) , l, font=font, fill=BLACK)
+
+    papirus.display(image)
+    papirus.partial_update()
 
 def main():
     GPIO.setmode(GPIO.BCM)
@@ -112,18 +133,18 @@ def main():
     interface = 'wlan0'
     scaleSpeed = 262144
     
-    text = PapirusText()
+    papirus = Papirus()
 
-    text.write("--4-----3-----2-----1--------\r\nPress 1 for basic info\r\nPress 2 for stats\r\nPress 3 for detailed info", S_SIZE)
+    write_text(papirus,"--4-----3-----2-----1--------\r\nPress 1 for basic info\r\nPress 2 for stats\r\nPress 3 for detailed info", S_SIZE)
 
     while True:
         if GPIO.input(SW1) == False:
-            text.write("AP= " + APName() + "\r\n" + "IP= " + IPAddress(), L_SIZE)
+            write_text(papirus,"AP= " + APName() + "\r\n" + "IP= " + IPAddress(), L_SIZE)
 
         if GPIO.input(SW2) == False:
             while GPIO.input(SW1) and GPIO.input(SW3) and GPIO.input(SW4):
                 netstats = BytesPerSecond(interface)
-                text.write("Long press 1,3,4 exit\r\nBandwidth:"
+                write_text(papirus,"Long press 1,3,4 exit\r\nBandwidth:"
                  + "\r\ntx: " + str(netstats['delta_tx']/1024)
                  + " Kb/s\r\n"
                  + "=" + ">"*(netstats['delta_tx']/scaleSpeed)
@@ -133,11 +154,10 @@ def main():
                 time.sleep(5)
 
         if GPIO.input(SW3) == False:
-            text.write(InterfaceInfo(), S_SIZE)
+            write_text(papirus,InterfaceInfo(), S_SIZE)
 
         if GPIO.input(SW4) == False:
-            text.write("Four", M_SIZE)
-
+            write_text(papirus,"Four", M_SIZE)
         sleep(0.1)
 
 if __name__ == '__main__':
